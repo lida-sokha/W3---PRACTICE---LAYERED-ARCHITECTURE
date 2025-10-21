@@ -2,8 +2,16 @@ class Question {
   final String title;
   final List<String> choices;
   final String goodChoice;
+
+  ///defind the point
+  int points;
   Question(
-      {required this.title, required this.choices, required this.goodChoice});
+      {required this.title,
+      required this.choices,
+      required this.goodChoice,
+      this.points = 1});
+
+  /// default 1
 }
 
 class Answer {
@@ -35,5 +43,16 @@ class Quiz {
       }
     }
     return ((totalSCore / questions.length) * 100).toInt();
+  }
+
+  ///total point
+  int getTotalpoints() {
+    int earnedpoint = 0;
+    for (Answer answer in answers) {
+      if (answer.isGood()) {
+        earnedpoint += answer.question.points;
+      }
+    }
+    return earnedpoint;
   }
 }
