@@ -27,32 +27,62 @@ class Answer {
 
 class Quiz {
   List<Question> questions;
-  List<Answer> answers = [];
+  // List<Answer> answers = [];
+  List<Player> players = [];
 
   Quiz({required this.questions});
 
-  void addAnswer(Answer asnwer) {
-    this.answers.add(asnwer);
-  }
-
-  int getScoreInPercentage() {
-    int totalSCore = 0;
-    for (Answer answer in answers) {
-      if (answer.isGood()) {
-        totalSCore++;
-      }
-    }
-    return ((totalSCore / questions.length) * 100).toInt();
+  void addPlayer(Player player) {
+    this.players.add(player);
   }
 
   ///total point
-  int getTotalpoints() {
-    int earnedpoint = 0;
-    for (Answer answer in answers) {
-      if (answer.isGood()) {
-        earnedpoint += answer.question.points;
+  void showScore() {
+    for (var p in players) {
+      print('Player:${p.name} \t Score: ${p.calculateTotalScore()}');
+    }
+  }
+
+  void addAndUpdatePlayer(Player player) {
+    var existingPlayer = players.firstWhere(
+      (p) => p.name.toLowerCase() == player.name.toLowerCase(),
+      orElse: () => Player(name: ''),
+    );
+    if (existingPlayer.name.isEmpty) {
+      players.add(player);
+    } else {
+       existingPlayer.SubnmitAnswer = List.from(player.SubnmitAnswer);
+
+
+    // Recalculate total after adding
+    int newScore = existingPlayer.calculateTotalScore();
+    double newPercent = existingPlayer.calculatePercentage(questions);
+     print(
+        "Updated ${existingPlayer.name}'s total score: $newScore points (${newPercent.toInt()}%)");
+    }
+  }
+}
+
+class Player {
+  String name;
+  List<Answer> SubnmitAnswer = [];
+  Player({required this.name});
+
+  int calculateTotalScore() {
+    int totalEarned = 0;
+    for (var a in SubnmitAnswer) {
+      if (a.isGood()) {
+        totalEarned += a.question.points;
       }
     }
-    return earnedpoint;
+    return totalEarned;
+  }
+
+  double calculatePercentage(List<Question> questions) {
+    int correct = 0;
+    for (var a in SubnmitAnswer) {
+      if (a.isGood()) correct++;
+    }
+    return (correct / questions.length) * 100;
   }
 }
