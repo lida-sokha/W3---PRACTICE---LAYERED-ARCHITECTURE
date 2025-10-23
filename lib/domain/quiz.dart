@@ -54,7 +54,6 @@ class Quiz {
        existingPlayer.SubnmitAnswer = List.from(player.SubnmitAnswer);
 
 
-    // Recalculate total after adding
     int newScore = existingPlayer.calculateTotalScore();
     double newPercent = existingPlayer.calculatePercentage(questions);
      print(
